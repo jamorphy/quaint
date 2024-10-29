@@ -36,7 +36,7 @@ export const mockEvents: Event[] = [
       data: {
         price: 875.00,
         price_previous: 850.00,
-        percent_change: 2.94,
+        percent_change: 2.94,    // Initial breakout
         time_span: 300
       }
     },
@@ -47,9 +47,9 @@ export const mockEvents: Event[] = [
       symbol: "NVDA",
       priority: 1,
       data: {
-        volume: 5000000,        // Increased volume
+        volume: 12000000,        // Massive institutional volume
         volume_avg: 800000,
-        percent_above_avg: 525,  // Much higher spike
+        percent_above_avg: 1400,  // Extreme volume confirmation
         timespan: 300
       }
     },
@@ -61,12 +61,12 @@ export const mockEvents: Event[] = [
       priority: 1,
       data: {
         open: 875.00,
-        high: 890.50,           // Strong bullish bar
-        low: 874.80,
-        close: 889.90,
-        volume: 5000000,
+        high: 899.50,           // Very strong momentum
+        low: 874.80,            // Barely any pullback
+        close: 898.90,          // Closed near highs
+        volume: 12000000,
         timestamp: "2024-10-28T14:31:50.000Z",
-        vwap: 885.20
+        vwap: 892.20
       }
     },
     {
