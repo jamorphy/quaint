@@ -28,8 +28,92 @@ export const mockEvents: Event[] = [
       }
     },
     {
-      id: "evt_003",
+      id: "evt_005",
+      timestamp: "2024-10-28T14:31:30.000Z",
+      type: "price_movement",
+      symbol: "NVDA",
+      priority: 1,
+      data: {
+        price: 875.00,
+        price_previous: 850.00,
+        percent_change: 2.94,
+        time_span: 300
+      }
+    },
+    {
+      id: "evt_006",
+      timestamp: "2024-10-28T14:31:45.000Z",
+      type: "volume_spike",
+      symbol: "NVDA",
+      priority: 1,
+      data: {
+        volume: 5000000,        // Increased volume
+        volume_avg: 800000,
+        percent_above_avg: 525,  // Much higher spike
+        timespan: 300
+      }
+    },
+    {
+      id: "evt_007",
+      timestamp: "2024-10-28T14:31:50.000Z",
+      type: "price_bar",
+      symbol: "NVDA",
+      priority: 1,
+      data: {
+        open: 875.00,
+        high: 890.50,           // Strong bullish bar
+        low: 874.80,
+        close: 889.90,
+        volume: 5000000,
+        timestamp: "2024-10-28T14:31:50.000Z",
+        vwap: 885.20
+      }
+    },
+    {
+      id: "evt_008",
+      timestamp: "2024-10-28T14:31:55.000Z",
+      type: "price_movement",
+      symbol: "META",
+      priority: 1,
+      data: {
+        price: 465.00,
+        price_previous: 495.00,
+        percent_change: -6.06,
+        time_span: 300
+      }
+    },
+    {
+      id: "evt_009",
       timestamp: "2024-10-28T14:32:00.000Z",
+      type: "volume_spike",
+      symbol: "META",
+      priority: 1,
+      data: {
+        volume: 8000000,
+        volume_avg: 1200000,
+        percent_above_avg: 567,
+        timespan: 300
+      }
+    },
+    {
+      id: "evt_010",
+      timestamp: "2024-10-28T14:32:05.000Z",
+      type: "price_bar",
+      symbol: "META",
+      priority: 1,
+      data: {
+        open: 465.00,
+        high: 465.20,
+        low: 445.30,           // Sharp bearish bar
+        close: 446.00,
+        volume: 8000000,
+        timestamp: "2024-10-28T14:32:05.000Z",
+        vwap: 452.15
+      }
+    },
+    {
+      id: "evt_003",
+      timestamp: "2024-10-28T14:32:30.000Z",
       type: "price_bar",
       symbol: "TSLA",
       priority: 3,
@@ -39,7 +123,7 @@ export const mockEvents: Event[] = [
         low: 235.20,
         close: 236.00,
         volume: 2500000,
-        timestamp: "2024-10-28T14:32:00.000Z",
+        timestamp: "2024-10-28T14:32:30.000Z",
         vwap: 238.65
       }
     },

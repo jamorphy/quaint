@@ -13,6 +13,7 @@
   "dependencies": {
     "@alpacahq/alpaca-trade-api": "^3.1.2",
     "@alpacahq/typescript-sdk": "^0.0.31-preview",
+    "@anthropic-ai/sdk": "^0.30.1",
     "dotenv": "^16.4.5",
     "openai": "^4.68.4"
   },

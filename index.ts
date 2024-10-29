@@ -2,6 +2,7 @@ import { EventQueue } from './queue';
 import { Event } from './types';
 import { mockEvents } from './data/mock-data';
 import { analyzeEvent } from './analysis/l1';
+import { performL2Analysis, L2AnalysisResult } from './analysis/l2';
 
 export const globalQueue = new EventQueue();
 
@@ -33,15 +34,31 @@ async function main() {
         if (event) {
           console.log(`\nProcessing event: ${event.id} - ${event.symbol}`);
 
-          const analysis = await analyzeEvent(event);
+          // L1 Analysis
+          const l1Analysis = await analyzeEvent(event);
+          console.log(`L1 Analysis complete for ${event.id}:`);
+          console.log('Reason:', l1Analysis.reasoning);
 
-          if (analysis.requiresL2Analysis) {
-            console.log(`Event ${event.id} requires L2 analysis:`);
-            console.log('Reason:', analysis.reasoning);
-            console.log('Queuing for L2... (not implemented yet)\n');
-          } else {
-            console.log(`Event ${event.id} processed by L1 only:`);
-            console.log('Reason:', analysis.reasoning, '\n');
+          // L2 Analysis if required
+          if (l1Analysis.requiresL2Analysis) {
+            console.log(`\nPerforming L2 analysis for ${event.id}...`);
+            const l2Analysis = await performL2Analysis(event);
+
+            console.log('L2 Analysis results:');
+            console.log('Analysis:', l2Analysis.analysis);
+            console.log('Confidence:', l2Analysis.tradeConfidence);
+
+            // L3 Handling (Trade Execution)
+            if (l2Analysis.shouldTrade) {
+              console.log('\nTrade opportunity identified!');
+              console.log('Analysis:', l2Analysis.analysis);
+              console.log('Confidence:', l2Analysis.tradeConfidence);
+              console.log('Queuing for L3 execution... (not implemented yet)');
+              // TODO: Implement L3 trade execution
+              // await executeTradeStrategy(event, l2Analysis);
+            } else {
+              console.log('No trade opportunity identified.\n');
+            }
           }
         }
       }
