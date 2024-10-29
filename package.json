@@ -1,0 +1,24 @@
+{
+  "name": "craimer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@alpacahq/alpaca-trade-api": "^3.1.2",
+    "@alpacahq/typescript-sdk": "^0.0.31-preview",
+    "dotenv": "^16.4.5",
+    "openai": "^4.68.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.8.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
