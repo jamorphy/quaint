@@ -4,8 +4,11 @@ import { mockEvents } from './data/mock-data';
 import { analyzeEvent } from './analysis/l1';
 import { performL2Analysis, L2AnalysisResult } from './analysis/l2';
 import { makeTradeDecision } from './analysis/l3';
+import { getDailyData, checkMarketSchedule } from './data/alpaca-market';
 
 export const globalQueue = new EventQueue();
+
+export const WATCHLIST = ['TSLA', 'META', 'SPY', 'AAPL', 'MSFT'];
 
 function logSeparator(text: string) {
   console.log('\n' + '='.repeat(80));
@@ -21,9 +24,32 @@ function logSubsection(text: string) {
 
 async function main() {
   logSeparator('MARKET ANALYSIS SYSTEM STARTING');
-  console.log('Initializing event stream...\n');
 
-  simulateEventStream().catch(console.error);
+  // Check market status and get daily data
+  const isMarketOpen = await checkMarketSchedule();
+  const dailyData = await getDailyData(WATCHLIST);
+
+  // Convert daily data into events for analysis
+  dailyData.forEach(({ symbol, bars }) => {
+    bars.forEach(bar => {
+      const event: Event = {
+        id: `${symbol}-${bar.Timestamp}`,
+        type: 'price_bar',
+        symbol,
+        timestamp: new Date(bar.Timestamp).getTime().toString(),
+        priority: 0,
+        data: {
+          timestamp: new Date(bar.Timestamp).getTime().toString(),
+          open: bar.OpenPrice,
+          high: bar.HighPrice,
+          low: bar.LowPrice,
+          close: bar.ClosePrice,
+          volume: bar.Volume
+        }
+      };
+      addToQueue(event);
+    });
+  });
 
   while (true) {
     try {
@@ -88,18 +114,6 @@ async function main() {
       logSeparator('ERROR');
       console.error('Error processing event:', error);
     }
-  }
-}
-
-async function simulateEventStream() {
-  logSeparator('EVENT SIMULATION STARTING');
-
-  for (const event of mockEvents) {
-    const delay = 1000 + Math.random() * 4000;
-    await new Promise(resolve => setTimeout(resolve, delay));
-
-    addToQueue(event);
-    console.log(`Added to queue: ${event.id} - ${event.symbol} (${event.type})`);
   }
 }
 

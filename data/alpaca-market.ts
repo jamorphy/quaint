@@ -10,9 +10,7 @@ const alpaca = new Alpaca({
   feed: 'iex' // TODO: switch to SIP when upgrading account
 });
 
-const WATCHLIST = ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'META'];
-
-async function getDailyData() {
+export async function getDailyData(watchlist: string[]) {
   const end = new Date();
   end.setDate(end.getDate() - 1);
   const start = new Date(end);
@@ -28,8 +26,10 @@ async function getDailyData() {
   console.log('\n=== Daily Market Data ===');
   console.log('Fetching data from', options.start, 'to', options.end);
 
+  const results = [];
+
   try {
-    for (const symbol of WATCHLIST) {
+    for (const symbol of watchlist) {
       const bars = await alpaca.getBarsV2(symbol, options);
       const data = [];
       for await (const bar of bars) {
@@ -49,15 +49,18 @@ async function getDailyData() {
             volume: Math.round(bar.Volume).toLocaleString()
           });
         });
+        results.push({ symbol, bars: data });
       }
     }
+    return results;
 
   } catch (error) {
     console.error('Error fetching market data:', error);
+    return [];
   }
 }
 
-async function checkMarketSchedule() {
+export async function checkMarketSchedule() {
   try {
     const clock = await alpaca.getClock();
     console.log('\n=== Market Schedule ===');
@@ -76,7 +79,7 @@ async function checkMarketSchedule() {
 async function main() {
   console.log('Starting daily market data check...');
   await checkMarketSchedule();
-  await getDailyData();
+  await getDailyData(['TSLA', 'META']);
 }
 
 if (require.main === module) {
