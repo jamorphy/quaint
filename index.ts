@@ -6,6 +6,7 @@ import { performL2Analysis, L2AnalysisResult } from './analysis/l2';
 import { makeTradeDecision } from './analysis/l3';
 import { getDailyData, checkMarketSchedule } from './data/alpaca-market';
 import { WATCHLIST } from './watchlist';
+import { logTrade } from './trade-history';
 
 export const globalQueue = new EventQueue();
 
@@ -90,6 +91,19 @@ async function processEvents() {
                 console.log(`Risk Level:    ${tradeDecision.riskLevel.toUpperCase()}`);
                 console.log('\nReasoning:');
                 console.log(tradeDecision.reasoning);
+
+                // Log the trade to history
+                logTrade({
+                  symbol: event.symbol,
+                  direction: tradeDecision.direction,
+                  size: tradeDecision.size,
+                  entryPrice: tradeDecision.entryPrice,
+                  stopLoss: tradeDecision.stopLoss,
+                  takeProfit: tradeDecision.takeProfit,
+                  timeframe: tradeDecision.timeframe,
+                  riskLevel: tradeDecision.riskLevel,
+                  reasoning: tradeDecision.reasoning,
+                });
 
                 logSubsection('SENDING TO ORDER EXECUTION');
                 // TODO: Send to order execution system
