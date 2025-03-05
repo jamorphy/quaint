@@ -5,10 +5,9 @@ import { analyzeEvent } from './analysis/l1';
 import { performL2Analysis, L2AnalysisResult } from './analysis/l2';
 import { makeTradeDecision } from './analysis/l3';
 import { getDailyData, checkMarketSchedule } from './data/alpaca-market';
+import { WATCHLIST } from './watchlist';
 
 export const globalQueue = new EventQueue();
-
-export const WATCHLIST = ['TSLA', 'META', 'SPY', 'AAPL', 'MSFT'];
 
 function logSeparator(text: string) {
   console.log('\n' + '='.repeat(80));
