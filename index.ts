@@ -21,14 +21,14 @@ function logSubsection(text: string) {
   console.log('-'.repeat(40));
 }
 
-async function main() {
-  logSeparator('MARKET ANALYSIS SYSTEM STARTING');
-
-  // Check market status and get daily data
+async function fetchMarketData() {
+  logSeparator('FETCHING MARKET DATA');
   const isMarketOpen = await checkMarketSchedule();
+  if (!isMarketOpen) {
+    console.log('Market is closed. Skipping data fetch.');
+    return;
+  }
   const dailyData = await getDailyData(WATCHLIST);
-
-  // Convert daily data into events for analysis
   dailyData.forEach(({ symbol, bars }) => {
     bars.forEach(bar => {
       const event: Event = {
@@ -49,7 +49,9 @@ async function main() {
       addToQueue(event);
     });
   });
+}
 
+async function processEvents() {
   while (true) {
     try {
       if (!globalQueue.isEmpty()) {
@@ -59,13 +61,11 @@ async function main() {
           console.log('Timestamp:', event.timestamp);
           console.log('Data:', JSON.stringify(event.data, null, 2));
 
-          // L1 Analysis
           logSubsection('LEVEL 1 ANALYSIS');
           const l1Analysis = await analyzeEvent(event);
           console.log('Result:', l1Analysis.reasoning);
           console.log('Requires L2:', l1Analysis.requiresL2Analysis ? 'YES' : 'NO');
 
-          // L2 Analysis if required
           if (l1Analysis.requiresL2Analysis) {
             logSubsection('LEVEL 2 ANALYSIS');
             const l2Analysis = await performL2Analysis(event);
@@ -75,7 +75,6 @@ async function main() {
             console.log('\nDetailed Analysis:');
             console.log(l2Analysis.analysis);
 
-            // L3 Analysis if L2 approves
             if (l2Analysis.shouldTrade) {
               logSubsection('LEVEL 3 ANALYSIS');
               const tradeDecision = await makeTradeDecision(event, l2Analysis);
@@ -114,6 +113,19 @@ async function main() {
       console.error('Error processing event:', error);
     }
   }
+}
+
+async function main() {
+  logSeparator('MARKET ANALYSIS SYSTEM STARTING');
+
+  // Initial market data fetch
+  await fetchMarketData();
+
+  // Start hourly market checks
+  setInterval(fetchMarketData, 60 * 60 * 1000); // Every hour
+
+  // Start event processing loop
+  await processEvents();
 }
 
 export function addToQueue(event: Event) {
